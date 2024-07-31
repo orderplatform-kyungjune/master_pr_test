@@ -1,0 +1,312 @@
+name: CICD production
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'tag to deploy'
+        required: true
+        default: 'v'
+        type: string
+      label:
+        description: 'label to deploy'
+        required: true
+        default: 'TORDER'
+        type: choice
+        options:
+          - ALL
+          - TORDER
+          - US1
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.check_tag.outputs.sha }}
+    steps:
+      # 입력한 태그 존재 여부 확인 및 commit sha 저장
+      - name: check if tag exists
+        id: check_tag
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_PAT }}
+          script: |
+            const { data: tag } = await github.request('GET /repos/{owner}/{repo}/git/refs/tags/{tag}', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: '${{ github.event.inputs.tag }}'
+            });
+            
+            if (tag) {
+              core.setOutput('sha', tag.object.sha);
+            }
+
+      # 선택한 태그로 체크아웃
+      - name: check out tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      # 노드 버전 세팅
+      - name: setup node version
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      # node_modules 캐시 복원
+      - name: restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # node_modules 설치
+      - name: install dependencies
+        run: pnpm install
+
+      # node_modules 캐시 저장
+      - name: save node_modules cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+  #---------------------------------- torder
+  build_torder:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: ${{ github.event.inputs.label == 'TORDER' || github.event.inputs.label == 'ALL' }}
+    outputs:
+      sha: ${{ needs.setup.outputs.sha }}
+    steps:
+      # 선택한 태그로 체크아웃
+      - name: check out tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      # node_modules 캐시 복원
+      - name: restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # build
+      - name: build TORDER
+        run: |
+          echo "building for TORDER"
+          pnpm run origin:build:live
+
+      # dist 폴더 캐시 저장
+      - name: save dist cache
+        uses: actions/cache/save@v4
+        with:
+          path: dist
+          key: torder-dist-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
+
+  deploy_torder:
+    runs-on: ubuntu-latest
+    needs: build_torder
+    steps:
+      # 선택한 태그로 체크아웃
+      - name: check out tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      # node_modules 캐시 복원
+      - name: restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      # dist 폴더 캐시 복원
+      - name: restore dist cache
+        uses: actions/cache/restore@v4
+        with:
+          path: dist
+          key: torder-dist-${{ runner.os }}-${{ needs.build_torder.outputs.sha }}-${{ github.workflow }}
+
+      # 배포
+      - name: deploy TORDER
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_LIVE_BUCKET_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DISTRIBUTION_ID: ${{ secrets.AWS_LIVE_DISTRIBUTION_ID }}
+        run: |
+          echo "deploying to TORDER"
+          pnpm run master:deploy:action:live
+
+  #---------------------------------- us1
+  build_us1:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: ${{ github.event.inputs.label == 'US1' || github.event.inputs.label == 'ALL' }}
+    outputs:
+      sha: ${{ needs.setup.outputs.sha }}
+    steps:
+      - name: check out tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - name: restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: build US1
+        run: |
+          echo "building for US1"
+          pnpm run us-east:build:live
+
+      - name: save dist cache
+        uses: actions/cache/save@v4
+        with:
+          path: dist
+          key: us1-dist-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
+
+  deploy_us1:
+    runs-on: ubuntu-latest
+    needs: build_us1
+    steps:
+      - name: check out tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - name: restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            app/master/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: restore dist cache
+        uses: actions/cache/restore@v4
+        with:
+          path: dist
+          key: us1-dist-${{ runner.os }}-${{ needs.build_us1.outputs.sha }}-${{ github.workflow }}
+
+      - name: deploy US1
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_US_EAST_BUCKET_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION_US_EAST }}
+          AWS_DISTRIBUTION_ID: ${{ secrets.AWS_US_EAST_DISTRIBUTION_ID }}
+        run: |
+          echo "deploying to US1"
+          pnpm run master:deploy:action:live
+
+  # slack 알림
+  slack_notification:
+    runs-on: ubuntu-latest
+    needs: [deploy_torder, deploy_uplus]
+    if: ${{ always() }}
+    steps:
+      # job 성공 여부 체크
+      - name: check workflow status
+        id: workflow_status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_PAT }}
+          script: |
+            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId
+            });
+          
+            let status = 'success';
+            for (const job of jobs.jobs) {
+              if (job.conclusion === 'failure' || job.conclusion === 'cancelled' || job.conclusion === 'neutral') {
+                status = job.conclusion;
+                break;
+              }
+            }
+            
+            core.setOutput('status', status);
+
+      # slack 알림
+      - name: slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          custom_payload: |
+            {
+              "attachments": [
+                {
+                  "color": '${{ steps.workflow_status.outputs.status }}' === 'success' ? '#52BF90' : '#FF240D',
+                  "blocks": [
+                    {
+                      "type": "header",
+                      "text": {
+                        "type": "plain_text",
+                        "text": ":t'order: 마스터 2.0 LIVE UPDATE 알림"
+                      }
+                    },
+                    {
+                      "type": "divider"
+                    },
+                    {
+                      "type": "section",
+                      "fields": [
+                        {
+                          "type": "mrkdwn",
+                          "text": "*라벨*\n${{ github.event.inputs.label }}"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "section",
+                      "fields": [
+                        {
+                          "type": "mrkdwn",
+                          "text": "*태그*\n${{ github.event.inputs.tag }}"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "section",
+                      "fields": [
+                        {
+                          "type": "mrkdwn",
+                          "text": "*상태*\n${{ steps.workflow_status.outputs.status }}"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "section",
+                      "fields": [
+                        {
+                          "type": "mrkdwn",
+                          "text": "*담당자*\n${{ github.event.sender.login }}"
+                        }
+                      ]
+                    },
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

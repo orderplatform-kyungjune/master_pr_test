@@ -1,0 +1,141 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
+@import url('@styles/background.pcss');
+@import url('@styles/typography.pcss');
+@import url('@styles/border.pcss');
+@import url('@styles/button.pcss');
+@import url('@styles/icon.pcss');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --h0-size: 3.125vw;
+  --h1-size: 2.5vw;
+  --h2-size: 2.3438vw;
+  --h3-size: 1.875vw;
+  --h4-size: 1.5625vw;
+  --h5-size: 1.4063vw;
+  --h6-size: 1.25vw;
+  --h7-size: 0.9375vw;
+
+  --slider-connect-bg: #FB3640;
+  --slider-bg: #2F3745;
+  --slider-tooltip-bg: #FB3640;
+  --slider-handle-bg:#FB3640;
+  --slider-handle-ring-color:#FB3640;
+  --slider-handle-ring-width:0px;
+  --slider-handle-width: 2.5vw;
+  --slider-handle-height: 2.5vw;
+
+  --toggle-width: 5.390625vw;
+  --toggle-height: 2.890625vw;
+  --toggle-border: 0px;
+  --toggle-font-size: 0.9375vw;
+  --toggle-duration: 300ms;
+  --toggle-bg-on: #FC0000;
+  --toggle-bg-off: #303745;
+  --toggle-bg-on-disabled: #d1d5db;
+  --toggle-bg-off-disabled: #e5e7eb;
+  --toggle-border-on: #FC0000;
+  --toggle-border-off: #303745;
+  --toggle-border-on-disabled: #d1d5db;
+  --toggle-border-off-disabled: #e5e7eb;
+  --toggle-ring-width: 0px;
+  --toggle-ring-color: #10B98130;
+  --toggle-text-on: #FE8F90;
+  --toggle-text-off: #4F5A6F;
+  --toggle-text-on-disabled: #9ca3af;
+  --toggle-text-off-disabled: #9ca3af;
+  --toggle-handle-enabled: #ffffff;
+  --toggle-handle-disabled: #f3f4f6;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Pretendard', sans-serif;
+  user-select: none;
+  outline: none;
+  color-scheme: dark;
+}
+
+@layer utilities {
+  .selected:after {
+    transition: all 0.3s;
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0.3125vw;
+    background: #FC0000;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .order-detail-card {
+    scrollbar-width: thin;
+    scrollbar-color: #FFFFFF #FFFFFF0D;
+  }
+
+  .order-detail-card::-webkit-scrollbar {
+    width: 0.625vw;
+    height: 31.25vw;
+    border-radius: 0.625vw;
+    background: transparent;
+  }
+
+  .order-detail-card::-webkit-scrollbar-track {
+    position: absolute;
+    background: #FFFFFF0D;
+    border-radius: 0.625vw;
+    margin-bottom: 2.34375vw;
+  }
+
+  .order-detail-card::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    border-radius: 0.625vw;
+  }
+
+  .toggle-handles {
+    background: var(--toggle-handle-enabled,#fff);
+    border-radius: 50%;
+    display: inline-block;
+    height: 2.1875vw;
+    position: absolute;
+    top: 12%;
+    transition-duration: var(--toggle-duration,.15s);
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    width: 2.1875vw;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.25));
+  }
+
+  .simple-order {
+    background: linear-gradient(90deg, #FC0000 44.86%, #FF4545 100%);
+  }
+
+  .loading-animation {
+    @apply overflow-hidden bg-[#FFFFFF0D]
+  }
+
+  .loading-animation::before{
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    animation: loading 1s infinite;
+    background: linear-gradient(to right, transparent,#FFFFFF0D,transparent);
+  }
+
+  @keyframes loading {
+    0%{
+      transform: translateX(-100%);
+    }
+    100%{
+      transform: translateX(100%);
+    }
+  }
+}

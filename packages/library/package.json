@@ -1,0 +1,11 @@
+{
+  "name": "@packages/library",
+  "version": "1.0.0",
+  "description": "공용 유틸",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hayden",
+  "license": "ISC"
+}

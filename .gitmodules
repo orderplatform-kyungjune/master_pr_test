@@ -1,0 +1,6 @@
+[submodule "packages/android-interface"]
+	path = packages/android-interface
+	url = https://github.com/torderdev/torderservice-android-interface-client
+[submodule "packages/eslint-config-torder"]
+	path = packages/eslint-config-torder
+	url = https://github.com/torderdev/torderservice-eslint-module-client

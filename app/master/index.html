@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme='dark'>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="../../../../favicon.svg"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>master2</title>
+    <script>
+      function handleScriptError() {
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.bottom = '0';
+        overlay.style.left = '0';
+        overlay.style.right = '0';
+        overlay.style.zIndex = '99';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.flexDirection = 'column';
+        overlay.style.backgroundColor = 'rgba(0,0,0,1)';
+
+        const failMessage = document.createElement('div');
+        failMessage.textContent = '마스터를 불러오는데 실패했습니다.';
+        failMessage.style.color = '#ffffff';
+        failMessage.style.fontSize = '4vw';
+        failMessage.style.textAlign = 'center';
+        overlay.appendChild(failMessage);
+
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = '새로고침 버튼을 눌러주세요.';
+        statusMessage.style.marginTop = '1vw';
+        statusMessage.style.paddingTop = '1vw';
+        statusMessage.style.color = '#ffffff';
+        statusMessage.style.fontSize = '4vw';
+        statusMessage.style.textAlign = 'center';
+
+        overlay.appendChild(statusMessage);
+
+        const refreshButton = document.createElement('button');
+        refreshButton.textContent = '새로고침';
+        refreshButton.onclick = () => location.reload();
+        refreshButton.style.marginTop = '2vw';
+        refreshButton.style.display = 'flex';
+        refreshButton.style.height = '9vw';
+        refreshButton.style.borderRadius = '6vw';
+        refreshButton.style.border = '0px';
+        refreshButton.style.backgroundColor = '#ff0000';
+        refreshButton.style.color = '#fafafa';
+        refreshButton.style.padding = '0 6vw';
+        refreshButton.style.fontSize = '4vw';
+        refreshButton.style.alignItems = 'center';
+        refreshButton.style.justifyContent = 'center';
+        overlay.appendChild(refreshButton);
+
+        document.body.appendChild(overlay);
+      }
+    </script>
+  </head>
+  <body style="background-color: #1f222a">
+    <div id="app"></div>
+    <script
+      type="module"
+      src="./src/main.ts"
+      onerror="handleScriptError()"
+    ></script>
+  </body>
+</html>

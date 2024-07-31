@@ -1,0 +1,44 @@
+@layer utilities {
+    .btn-bg-primary {
+        @apply bg-[#FC0000]
+    }
+
+    .btn-bg-primary-pressed {
+        @apply bg-[#252A35]
+    }
+
+    .btn-bg-primary-disabled {
+        @apply bg-[#292929]
+    }
+
+    .btn-bg-gray {
+        @apply bg-[#FFFFFF]
+    }
+
+    .btn-bg-gray-pressed {
+        @apply bg-[#111111CC]
+    }
+
+    .btn-bg-gray-disabled {
+        @apply bg-[#292929]
+    }
+
+    .btn-ghost {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+        linear-gradient(0deg, rgba(17, 17, 17, 0.5), rgba(17, 17, 17, 0.5));
+        border: 0.078125vw solid #FFFFFF33;
+    }
+
+    .btn-ghost-pressed {
+        @apply bg-[#FFFFFF33] border-solid border-[0.078125vw] border-[#FFFFFF33]
+    }
+
+    .btn-side-menu {
+        @apply rounded-[0.625vw] w-[13.125vw] p-[1.171875vw]
+    }
+
+    .btn-side-bottom-menu {
+        @apply w-full h-[3.90625vw]
+    }
+}
+

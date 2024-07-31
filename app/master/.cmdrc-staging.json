@@ -1,0 +1,34 @@
+{
+  "origin": {
+    "VITE_API_BASE_URL": "https://stage-api-master.torder.com/api/master",
+    "VITE_SOCKET_URL": "https://socketio.torder.co.kr",
+    "VITE_REGION": "origin",
+    "VITE_FIRST_LOGIN_KEY": "0LiX1qRwju",
+    "VITE_SENTRY_DSN": "https://1b376fef27b44f2bbc3a72e9ac023242@o1059837.ingest.sentry.io/6048818",
+    "VITE_SENTRY_RELEASE": "local-dev"
+  },
+  "local-origin": {
+    "VITE_API_BASE_URL": "http://stage-api-master.torder.com/api/master",
+    "VITE_SOCKET_URL": "http://socketio.torder.co.kr",
+    "VITE_REGION": "origin",
+    "VITE_FIRST_LOGIN_KEY": "0LiX1qRwju",
+    "VITE_SENTRY_DSN": "https://1b376fef27b44f2bbc3a72e9ac023242@o1059837.ingest.sentry.io/6048818",
+    "VITE_SENTRY_RELEASE": "local-dev"
+  },
+  "us-east": {
+    "VITE_API_BASE_URL": "https://us1-stage-api-master.torder.com/api/master",
+    "VITE_SOCKET_URL": "https://socketio.us-east.torder.io",
+    "VITE_REGION": "us1",
+    "VITE_FIRST_LOGIN_KEY": "0LiX1qRwju",
+    "VITE_SENTRY_DSN": "https://1b376fef27b44f2bbc3a72e9ac023242@o1059837.ingest.sentry.io/6048818",
+    "VITE_SENTRY_RELEASE": "local-dev"
+  },
+  "local-us-east": {
+    "VITE_API_BASE_URL": "http://us1-stage-api-master.torder.com/api/master",
+    "VITE_SOCKET_URL": "http://socketio.us-east.torder.io",
+    "VITE_REGION": "us1",
+    "VITE_FIRST_LOGIN_KEY": "0LiX1qRwju",
+    "VITE_SENTRY_DSN": "https://1b376fef27b44f2bbc3a72e9ac023242@o1059837.ingest.sentry.io/6048818",
+    "VITE_SENTRY_RELEASE": "local-dev"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "origin": {
+    "VITE_API_BASE_URL": "http://dev-api-master.torder.com/api/master",
+    "VITE_SOCKET_URL": "http://development.socket.torder.co.kr:80",
+    "VITE_REGION": "origin",
+    "VITE_FIRST_LOGIN_KEY": "0LiX1qRwju",
+    "VITE_SENTRY_DSN": "https://1b376fef27b44f2bbc3a72e9ac023242@o1059837.ingest.sentry.io/6048818",
+    "VITE_SENTRY_RELEASE": "local-dev"
+  }
+}
