@@ -6,7 +6,7 @@ on:
       branch:
         description: 'branch to deploy'
         required: true
-        default: 'develop'
+        default: 'main'
         type: string
       label:
         description: 'label to deploy'
@@ -56,6 +56,7 @@ jobs:
       - name: install pnpm
         run: |
           npm install -g pnpm@8.4.0
+          echo "::add-path::$(dirname $(which pnpm))"
           echo "pnpm installed at $(which pnpm)"
 
       # node_modules 캐시 복원
