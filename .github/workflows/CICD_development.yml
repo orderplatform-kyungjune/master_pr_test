@@ -54,7 +54,9 @@ jobs:
 
       # pnpm 설치
       - name: install pnpm
-        run: npm install -g pnpm@8.4.0
+        run: |
+          npm install -g pnpm@8.4.0
+          echo "pnpm installed at $(which pnpm)"
 
       # node_modules 캐시 복원
       - name: restore node_modules cache
@@ -101,9 +103,10 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      # node_modules 설치
-      - name: install dependencies
-        run: pnpm install
+          # pnpm 설치
+      - name: install pnpm
+        run: |
+          echo "pnpm installed at $(which pnpm)"
 
       # build
       - name: build TORDER
