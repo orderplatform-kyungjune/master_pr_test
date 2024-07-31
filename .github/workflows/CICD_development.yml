@@ -54,9 +54,7 @@ jobs:
 
       # pnpm 설치
       - name: install pnpm
-        run: |
-          npm install -g pnpm@8.4.0
-          echo "PATH=$(dirname $(which pnpm)):$PATH" >> $GITHUB_ENV
+        run: npm install -g pnpm@8.4.0
 
       # node_modules 캐시 복원
       - name: restore node_modules cache
@@ -103,10 +101,9 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-          # pnpm 설치
+      # pnpm 설치
       - name: install pnpm
-        run: |
-          echo "pnpm installed at $(which pnpm)"
+        run: npm install -g pnpm@8.4.0
 
       # build
       - name: build TORDER
@@ -150,6 +147,10 @@ jobs:
         with:
           path: dist
           key: torder-dist-${{ runner.os }}-${{ needs.build_torder.outputs.sha }}-${{ github.workflow }}
+
+      # pnpm 설치
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
 
       # 배포
       - name: deploy TORDER
