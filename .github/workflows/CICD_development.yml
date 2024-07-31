@@ -78,11 +78,6 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: 체크
-        run: |
-          ls -al
-          ls -al app/master
-
   #---------------------------------- torder
   build_torder:
     runs-on: ubuntu-latest
@@ -105,6 +100,11 @@ jobs:
             node_modules
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: 체크
+        run: |
+          ls -al
+          ls -al app/master
 
       # build
       - name: build TORDER
