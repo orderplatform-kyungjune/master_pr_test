@@ -56,8 +56,7 @@ jobs:
       - name: install pnpm
         run: |
           npm install -g pnpm@8.4.0
-          echo "::add-path::$(dirname $(which pnpm))"
-          echo "pnpm installed at $(which pnpm)"
+          echo "PATH=$(dirname $(which pnpm)):$PATH" >> $GITHUB_ENV
 
       # node_modules 캐시 복원
       - name: restore node_modules cache
