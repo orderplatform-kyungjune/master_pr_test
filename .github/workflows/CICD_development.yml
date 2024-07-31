@@ -101,10 +101,9 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - name: 체크
-        run: |
-          ls -al
-          ls -al app/master
+      # node_modules 설치
+      - name: install dependencies
+        run: pnpm install
 
       # build
       - name: build TORDER
