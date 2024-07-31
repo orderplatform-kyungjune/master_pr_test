@@ -119,7 +119,7 @@ jobs:
       - name: save dist cache
         uses: actions/cache/save@v4
         with:
-          path: dist
+          path: app/master/dist
           key: torder-dist-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
 
   deploy_torder:
@@ -145,7 +145,7 @@ jobs:
       - name: restore dist cache
         uses: actions/cache/restore@v4
         with:
-          path: dist
+          path: app/master/dist
           key: torder-dist-${{ runner.os }}-${{ needs.build_torder.outputs.sha }}-${{ github.workflow }}
 
       # pnpm 설치
