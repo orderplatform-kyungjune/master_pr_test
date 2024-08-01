@@ -152,6 +152,11 @@ jobs:
       - name: install pnpm
         run: npm install -g pnpm@8.4.0
 
+      - name: 체크
+        run: |
+          ls -al
+          ls -al app/master
+
       # 배포
       - name: deploy TORDER
         env:
