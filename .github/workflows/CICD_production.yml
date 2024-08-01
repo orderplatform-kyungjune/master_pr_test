@@ -53,6 +53,10 @@ jobs:
         with:
           node-version: "20.x"
 
+      # pnpm 설치
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
+
       # node_modules 캐시 복원
       - name: restore node_modules cache
         uses: actions/cache/restore@v4
@@ -98,6 +102,10 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
+      # pnpm 설치
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
+
       # build
       - name: build TORDER
         run: |
@@ -108,7 +116,7 @@ jobs:
       - name: save dist cache
         uses: actions/cache/save@v4
         with:
-          path: dist
+          path: app/master/dist
           key: torder-dist-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
 
   deploy_torder:
@@ -134,8 +142,12 @@ jobs:
       - name: restore dist cache
         uses: actions/cache/restore@v4
         with:
-          path: dist
+          path: app/master/dist
           key: torder-dist-${{ runner.os }}-${{ needs.build_torder.outputs.sha }}-${{ github.workflow }}
+
+      # pnpm 설치
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
 
       # 배포
       - name: deploy TORDER
@@ -171,6 +183,9 @@ jobs:
             app/master/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
+
       - name: build US1
         run: |
           echo "building for US1"
@@ -179,7 +194,7 @@ jobs:
       - name: save dist cache
         uses: actions/cache/save@v4
         with:
-          path: dist
+          path: app/master/dist
           key: us1-dist-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
 
   deploy_us1:
@@ -202,8 +217,11 @@ jobs:
       - name: restore dist cache
         uses: actions/cache/restore@v4
         with:
-          path: dist
+          path: app/master/dist
           key: us1-dist-${{ runner.os }}-${{ needs.build_us1.outputs.sha }}-${{ github.workflow }}
+
+      - name: install pnpm
+        run: npm install -g pnpm@8.4.0
 
       - name: deploy US1
         env:
@@ -220,7 +238,7 @@ jobs:
   # slack 알림
   slack_notification:
     runs-on: ubuntu-latest
-    needs: [deploy_torder, deploy_uplus]
+    needs: [deploy_torder, deploy_us1]
     if: ${{ always() }}
     steps:
       # job 성공 여부 체크
