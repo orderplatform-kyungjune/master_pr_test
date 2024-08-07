@@ -56,15 +56,6 @@ jobs:
       - name: install pnpm
         run: npm install -g pnpm@8.4.0
 
-      # node_modules 캐시 복원
-      - name: restore node_modules cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            node_modules
-            app/master/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       # node_modules 설치
       - name: install dependencies
         run: pnpm install
@@ -76,7 +67,7 @@ jobs:
           path: |
             node_modules
             app/master/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: node-modules-${{ runner.os }}-${{ steps.check_branch.outputs.sha }}-${{ github.workflow }}
 
   #---------------------------------- torder
   build_torder:
@@ -99,7 +90,7 @@ jobs:
           path: |
             node_modules
             app/master/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: node-modules-${{ runner.os }}-${{ needs.setup.outputs.sha }}-${{ github.workflow }}
 
       # pnpm 설치
       - name: install pnpm
@@ -139,7 +130,7 @@ jobs:
           path: |
             node_modules
             app/master/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: node-modules-${{ runner.os }}-${{ needs.build_torder.outputs.sha }}-${{ github.workflow }}
 
       # dist 폴더 캐시 복원
       - name: restore dist cache
